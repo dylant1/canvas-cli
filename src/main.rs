@@ -1,14 +1,17 @@
+use reqwest;
+use std::env;
 use mini_redis::{client, Result};
 
 #[tokio::main]
 async fn main() -> Result<()> {
 
-    let mut client = client::connect("127.0.0.1:6379").await?;
+    let access_token: &'static str = env!("ACCESS_TOKEN");
+    let url ="https://canvas.instructure.com/api/v1/courses?access_token=".to_owned() + access_token;
 
-    client.set("hello", "world".into()).await?; 
-    let result = client.get("hello").await?;
+    let body = reqwest::get(url).await?.text().await?;
 
-    println!("Got value  from the server; result = {:?}", result);
-
+    println!("Body: {}", body);
+    println!("TOKEN: {}", access_token);
+    
     Ok(())
 }
