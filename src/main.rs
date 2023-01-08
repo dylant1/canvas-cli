@@ -27,21 +27,32 @@ async fn main() -> Result<()> {
     println!("COMMAND: {} ", args.cmd);
     let access_token: &'static str = env!("ACCESS_TOKEN");
 
-    let grades: String = get_grades(user.access_token).await.unwrap();
-    println!("{:?}", grades);
+    //let grades: String = get_grades(user.access_token).await.unwrap();
+    //println!("{:?}", grades);
 
-    
-    Ok(())
-}
-
-async fn get_grades(access_token: &'static str) -> Result<String> {
     let client = reqwest::Client::new();
     let body = client
-        .get("https://canvas.instructure.com/api/v1/courses")
+        .get("https://canvas.instructure.com/api/v1/courses/")
         .header("Authorization", "Bearer ".to_owned() + access_token)
         .send()
         .await?
-        .text()
+        .json::<serde_json::Value>()
         .await?;
-    Ok(body)
+    println!("{:#?}", body);
+    body.whatisthis();
+    Ok(())
+}
+
+async fn get_grades(access_token: &'static str) -> Result<()> {
+    let client = reqwest::Client::new();
+    let body = client
+        .get("https://canvas.instructure.com/api/v1/courses/")
+        .header("Authorization", "Bearer ".to_owned() + access_token)
+        .send()
+        .await?
+        .json::<serde_json::Value>()
+        .await?;
+    println!("{:#?}", body);
+    println!("ETSTSETST");
+    Ok(())
 }

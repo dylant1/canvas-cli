@@ -98,6 +98,7 @@ dependencies = [
  "clap 4.0.32",
  "mini-redis",
  "reqwest",
+ "serde_json",
  "tokio",
 ]
 
