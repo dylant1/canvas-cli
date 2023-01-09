@@ -8,6 +8,18 @@ struct Cli {
     cmd: String,
 }
 
+#[derive(Debug)]
+struct Enrollment {
+    enrollment_state: String,
+    user_id: i64
+}
+
+#[derive(Debug)]
+struct Class {
+    account_id: i64,
+    course_code: String,
+    enrollments: Vec<Enrollment>
+}
 struct User {
     access_token: &'static str,
 }
@@ -15,6 +27,8 @@ struct User {
 #[tokio::main]
 async fn main() -> Result<()> {
 
+
+    //TODO: Figure out how to serialize json
     let args = Cli::parse();
     let user = User {
         access_token: env!("ACCESS_TOKEN"),
@@ -39,7 +53,7 @@ async fn main() -> Result<()> {
         .json::<serde_json::Value>()
         .await?;
     println!("{:#?}", body);
-    body.whatisthis();
+
     Ok(())
 }
 
@@ -50,7 +64,7 @@ async fn get_grades(access_token: &'static str) -> Result<()> {
         .header("Authorization", "Bearer ".to_owned() + access_token)
         .send()
         .await?
-        .json::<serde_json::Value>()
+        .json::<Class>()
         .await?;
     println!("{:#?}", body);
     println!("ETSTSETST");
