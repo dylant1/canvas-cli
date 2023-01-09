@@ -1,4 +1,7 @@
-use reqwest;
+use std::any::{Any};
+use serde::{Deserialize, Serialize};
+use std::collections::HashMap;
+use reqwest; 
 use clap::Parser;
 use std::env;
 use mini_redis::Result;
@@ -8,18 +11,15 @@ struct Cli {
     cmd: String,
 }
 
-#[derive(Debug)]
-struct Enrollment {
-    enrollment_state: String,
-    user_id: i64
-}
-
-#[derive(Debug)]
+#[derive(Debug, Serialize, Deserialize)]
+#[serde(rename_all = "camelCase")]
 struct Class {
     account_id: i64,
-    course_code: String,
-    enrollments: Vec<Enrollment>
+    apply_assigment_group_weights: bool,
+    course_code: String, 
+    enrollments: Vec<Vec<HashMap<String, serde_json::Value>>>
 }
+
 struct User {
     access_token: &'static str,
 }
@@ -50,7 +50,7 @@ async fn main() -> Result<()> {
         .header("Authorization", "Bearer ".to_owned() + access_token)
         .send()
         .await?
-        .json::<serde_json::Value>()
+        .json::<Vec<Class>>()
         .await?;
     println!("{:#?}", body);
 
@@ -59,14 +59,14 @@ async fn main() -> Result<()> {
 
 async fn get_grades(access_token: &'static str) -> Result<()> {
     let client = reqwest::Client::new();
-    let body = client
-        .get("https://canvas.instructure.com/api/v1/courses/")
-        .header("Authorization", "Bearer ".to_owned() + access_token)
-        .send()
-        .await?
-        .json::<Class>()
-        .await?;
-    println!("{:#?}", body);
+    //let body = client
+        //.get("https://canvas.instructure.com/api/v1/courses/")
+        //.header("Authorization", "Bearer ".to_owned() + access_token)
+        //.send()
+        //.await?
+        //.json::<Class>()
+        //.await?;
+    //println!("{:#?}", body);
     println!("ETSTSETST");
     Ok(())
 }
