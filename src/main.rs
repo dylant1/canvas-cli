@@ -14,10 +14,14 @@ struct Cli {
 #[derive(Debug, Serialize, Deserialize)]
 #[serde(rename_all = "camelCase")]
 struct Class {
-    account_id: i64,
+    id: isize,
+    name: String,
+    account_id: isize,
+    uuid: String,
+    start_at: String,
     apply_assigment_group_weights: bool,
     course_code: String, 
-    enrollments: Vec<Vec<HashMap<String, serde_json::Value>>>
+    //enrollments: Vec<Vec<HashMap<String, serde_json::Value>>>
 }
 
 struct User {
@@ -45,13 +49,15 @@ async fn main() -> Result<()> {
     //println!("{:?}", grades);
 
     let client = reqwest::Client::new();
-    let body = client
+    let body: Vec<Class> = client
         .get("https://canvas.instructure.com/api/v1/courses/")
         .header("Authorization", "Bearer ".to_owned() + access_token)
         .send()
         .await?
-        .json::<Vec<Class>>()
+        .json()
         .await?;
+    //println!("{}", &body);
+    //let json: Vec<Class> = serde_json::from_str(&body).unwrap();
     println!("{:#?}", body);
 
     Ok(())
