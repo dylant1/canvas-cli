@@ -49,12 +49,12 @@ async fn main() -> Result<()> {
     //println!("{:?}", grades);
 
     let client = reqwest::Client::new();
-    let body: Vec<Class> = client
+    let body = client
         .get("https://canvas.instructure.com/api/v1/courses/")
         .header("Authorization", "Bearer ".to_owned() + access_token)
         .send()
         .await?
-        .json()
+        .json::<serde_json::Value>()
         .await?;
     //println!("{}", &body);
     //let json: Vec<Class> = serde_json::from_str(&body).unwrap();
